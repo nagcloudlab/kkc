@@ -1,7 +1,7 @@
 
 
 
-sudo apt update
+
 
 install Java and Maven
 ------------------------------------------------
