@@ -27,4 +27,13 @@ replay_pid*
 kafka1
 kafka2
 kafka3
+
 kafka-ui
+
+6379
+6380
+6381
+
+cassandra1
+cassandra2
+cassandra3
