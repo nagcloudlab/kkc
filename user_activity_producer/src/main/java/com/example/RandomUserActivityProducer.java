@@ -51,14 +51,11 @@ public class RandomUserActivityProducer {
     private static String generateRandomUserActivity() {
         Random random = new Random();
         ObjectMapper objectMapper = new ObjectMapper();
-
         String[] activityTypes = { "login", "logout", "transfer" };
         String userId = String.valueOf(10 + random.nextInt(10));
         String activityType = activityTypes[random.nextInt(activityTypes.length)];
         String timestamp = String.valueOf(System.currentTimeMillis());
-
         UserActivity userActivity = new UserActivity(userId, activityType, timestamp);
-
         try {
             return objectMapper.writeValueAsString(userActivity);
         } catch (Exception e) {
@@ -69,7 +66,6 @@ public class RandomUserActivityProducer {
 
     public static void main(String[] args) {
         KafkaProducer<String, String> producer = createKafkaProducer();
-
         for (int i = 0; i < Integer.MAX_VALUE; i++) {
             String activityJson = generateRandomUserActivity();
 
@@ -91,7 +87,6 @@ public class RandomUserActivityProducer {
                 break;
             }
         }
-
         producer.close();
     }
 }

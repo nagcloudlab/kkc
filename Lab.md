@@ -131,6 +131,22 @@ replicaof localhost 6379
 ```
 
 
+```bash
+cd 6379
+redis-server redis.conf
+cd 6380
+redis-server redis.conf
+cd 6381
+redis-server redis.conf
+```
+
+```bash
+redis-cli -p 6379
+INFO REPLICATION
+```
+
+
+
 
 Deploy cassandra
 ------------------------------------------------

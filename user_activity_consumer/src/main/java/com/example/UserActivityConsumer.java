@@ -22,7 +22,7 @@ public class UserActivityConsumer {
 
     // ======== Config ========
     private static final String KAFKA_BOOTSTRAP = "localhost:9094";
-    private static final String KAFKA_GROUP_ID = "activity_group";
+    private static final String KAFKA_GROUP_ID = "user-activity-consumer-group1";
     private static final String KAFKA_TOPIC = "user-activities";
 
     private static final String REDIS_HOST = "localhost";
@@ -66,19 +66,22 @@ public class UserActivityConsumer {
     }
 
     public static void main(String[] args) {
+
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             RUNNING.set(false);
             System.out.println("Shutdown signal received. Closing resources...");
         }));
 
         KafkaConsumer<String, String> consumer = createKafkaConsumer();
-        try (Jedis redisClient = createRedisClient();
-                CqlSession cassandraSession = createCassandraSession()) {
+
+        Jedis redisClient = createRedisClient();
+        CqlSession cassandraSession = createCassandraSession();
+        try (redisClient; cassandraSession) {
 
             ObjectMapper objectMapper = new ObjectMapper();
 
-            // Prepare INSERT for: useractivityks.useractivities(user_id,
-            // activity_timestamp, activity_type)
+            // Prepare INSERT for: useractivityks.useractivities(user_id,activity_timestamp,
+            // activity_type)
             PreparedStatement insertStatement = cassandraSession.prepare(
                     "INSERT INTO useractivities (user_id, activity_timestamp, activity_type) VALUES (?, ?, ?)");
 
@@ -118,13 +121,14 @@ public class UserActivityConsumer {
                         long count = redisClient.incr(redisKey);
                         redisClient.expire(redisKey, 3600); // 1 hour
 
-                        if (count > 100) {
+                        if (count > 30) {
                             redisClient.publish("user-activity-alert",
-                                    "User " + userId + " has performed " + activityType + " > " + count + " times!");
+                                    "User " + userId + " has performed " + activityType + " > " + count + "times!");
                         }
 
                         // -------- Cassandra: insert activity row --------
-                        BoundStatement bound = insertStatement.bind(userId, activityTimestamp, activityType);
+                        BoundStatement bound = insertStatement.bind(userId, activityTimestamp,
+                                activityType);
                         cassandraSession.execute(bound);
 
                         System.out.printf("Processed activity user=%s type=%s ts=%s%n",
