@@ -1,4 +1,17 @@
 
+install git
+------------------------------------------------
+```bash
+sudo apt update
+sudo apt install -y git
+git --version
+```
+
+clone my repository
+------------------------------------------------
+```bash
+git clone http://github.com/nagcloudlab/kkc.git
+```
 
 
 install Java and Maven
@@ -25,7 +38,7 @@ cp -r kafka1 kafka3
 ```
 
 
-On each Kafka, edit the server.properties file:
+On each Kafka server, edit the server.properties file:
 
 ```properties
 broker.id=101 | 102 | 103
@@ -101,14 +114,14 @@ sudo apt install redis-server -y
 sudo systemctl stop redis-server 
 
 ```bash
-mkdir 6379
-cd 6379
+mkdir redis-master
+cd redis-master
 touch redis.conf
 ```
 
 ```bash
-mkdir 6380
-cd 6380
+mkdir redis-replica1
+cd redis-replica1
 touch redis.conf
 ```
 
@@ -119,8 +132,8 @@ replicaof localhost 6379
 ```
 
 ```bash
-mkdir 6381
-cd 6381
+mkdir redis-replica2
+cd redis-replica2
 touch redis.conf
 ```
 
@@ -132,7 +145,7 @@ replicaof localhost 6379
 
 
 ```bash
-cd 6379
+cd redis-master
 redis-server redis.conf
 cd 6380
 redis-server redis.conf
@@ -154,6 +167,7 @@ Deploy cassandra
 ```bash
 wget https://dlcdn.apache.org/cassandra/5.0.5/apache-cassandra-5.0.5-bin.tar.gz
 tar -xzf apache-cassandra-5.0.5-bin.tar.gz
+rm apache-cassandra-5.0.5-bin.tar.gz
 mv apache-cassandra-5.0.5 cassandra1
 cp -r cassandra1 cassandra2
 cp -r cassandra1 cassandra3
@@ -164,7 +178,15 @@ on each Cassandra, edit the cassandra.yaml file:
 ```yaml
 listen_address: 127.0.0.2 | 127.0.0.3 | 127.0.0.4
 rpc_address: 127.0.0.2 | 127.0.0.3 | 127.0.0.4
+seeds: "127.0.0.2:7000"
 ```
+
+jvm.server options 
+
+-Xms500m
+-Xmx500m
+
+
 on each Cassandra, edit the cassandra-env.sh file: ( line 235 )
 ```bash
 JMX_PORT=7199 | 7299 | 7399

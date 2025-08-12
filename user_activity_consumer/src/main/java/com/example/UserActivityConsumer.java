@@ -28,7 +28,7 @@ public class UserActivityConsumer {
     private static final String REDIS_HOST = "localhost";
     private static final int REDIS_PORT = 6379;
 
-    private static final String CASS_HOST = "127.0.0.1";
+    private static final String CASS_HOST = "127.0.0.2";
     private static final int CASS_PORT = 9042;
     private static final String CASS_DC = "datacenter1"; // change if different
     private static final String CASS_KS = "useractivityks"; // your keyspace
