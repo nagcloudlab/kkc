@@ -1,3 +1,9 @@
+day-1
+--------
+-> Overview of Kafka,keydb and cassandra
 
-
--> Modern s/w engineering architecture
+day-2
+-------
+-> Modern s/w  Architecture
+-> Kafka Internal Arch
+-> Kafka Producer-client

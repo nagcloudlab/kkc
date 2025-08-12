@@ -2,3 +2,11 @@ kafka
 ------
 https://docs.google.com/presentation/d/1KOo_ScbAyIinWnPGT9x9xaN7UxYE698CBJe2nKbXEWo/edit?usp=sharing
 https://docs.google.com/presentation/d/1oZU7PEcszM1C1HmR7u7EI5-DhRiQJNKi/edit?usp=sharing&ouid=116008769779639876320&rtpof=true&sd=true
+
+
+
+reference links
+----------------
+
+https://www.reactivemanifesto.org/
+

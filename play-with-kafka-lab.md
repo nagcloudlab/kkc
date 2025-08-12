@@ -31,3 +31,7 @@ kafka1/bin/kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic to
 kafka1/bin/kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic topic4
 
 ``` 
+
+
+Event -> Topic -> Partition -> Offset
+
