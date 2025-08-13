@@ -5,18 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="34e5ac6a-62ce-477c-b21e-53458b1487d9" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/MyCustomInterceptor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/MyCustomPartitioner.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../flow.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../flow.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/how_to_run.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/CustomPartitioner.java" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/TransactionalProducerClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/ProducerClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/ProducerClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/ProducerInterceptor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/simplelogger.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/simplelogger.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/simplelogger.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/simplelogger.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,6 +36,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Application.ProducerClient.executor": "Run",
+    "Application.TransactionalProducerClient.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
@@ -53,7 +45,7 @@
     "settings.editor.selected.configurable": "inlay.hints"
   }
 }]]></component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Application.TransactionalProducerClient">
     <configuration name="ProducerClient" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.example.ProducerClient" />
       <module name="kafka_producer_client" />
@@ -67,8 +59,22 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="TransactionalProducerClient" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.example.TransactionalProducerClient" />
+      <module name="kafka_producer_client" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.example.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.TransactionalProducerClient" />
         <item itemvalue="Application.ProducerClient" />
       </list>
     </recent_temporary>

@@ -29,7 +29,7 @@ public class ProducerClient {
         properties.put("buffer.memory", "33554432"); // 32 MB
         properties.put("max.block.ms", "60000"); // 60 seconds
 
-        // Partitioning
+        // Partitioner
         // -----------------------------------------
         // default partitioner is used, which uses the key to determine the partition
 
@@ -98,6 +98,12 @@ public class ProducerClient {
         properties.put("interceptor.classes", "com.example.MyCustomInterceptor");
 
         KafkaProducer<String, String> producer = new KafkaProducer<>(properties);
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            System.out.println("Shutting down producer...");
+            // Any cleanup code can go here
+            producer.flush();
+        }));
 
         String topic = "transfer-events";
         for (int i = 0; i < Integer.MAX_VALUE; i++) {
