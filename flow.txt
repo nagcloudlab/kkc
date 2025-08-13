@@ -6,4 +6,8 @@ day-2
 -------
 -> Modern s/w  Architecture
 -> Kafka Internal Arch
--> Kafka Producer-client
+-> Kafka Producer-client ( Overview)
+
+day-3
+-------
+-> Kafka Producer-client ( deep)
