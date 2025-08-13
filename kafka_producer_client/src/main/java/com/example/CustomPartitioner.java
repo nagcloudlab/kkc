@@ -1,36 +1,36 @@
 package com.example;
 
-public class CustomPartitioner implements org.apache.kafka.clients.producer.Partitioner {
+import org.apache.kafka.clients.producer.Partitioner;
+import org.apache.kafka.common.Cluster;
+
+import java.util.Map;
+
+public class CustomPartitioner implements Partitioner {
 
     @Override
-    public void configure(java.util.Map<String, ?> configs) {
-    }
-
-    @Override
-    public int partition(String topic, Object key, byte[] keyBytes, Object value, byte[] valueBytes,
-            org.apache.kafka.common.Cluster cluster) {
+    public int partition(String topic, Object key, byte[] keyBytes, Object value, byte[] valueBytes, Cluster cluster) {
+        // logic to determine partition based on key
         String transferType = (String) key;
-        switch (transferType) {
+        switch (transferType){
             case "IMPS":
-                // IMPS goes to partition 0
-                return 0;
+                return 0; // IMPS transfers go to partition 0
             case "RTGS":
-                // RTGS goes to partition 0
-                return 0;
+                return 0; // RTGS transfers go to partition 1
             case "NEFT":
-                // NEFT goes to partition 1
-                return 1;
+                return 1; // NEFT transfers go to partition 2
             case "UPI":
-                // UPI goes to partition 2
-                return 2;
+                return 2; // UPI transfers go to partition 3
             default:
-                // Default case, send to partition 0
-                return 0;
+                return cluster.partitionCountForTopic(topic) - 1; // Default to last partition for unknown types
         }
     }
 
     @Override
     public void close() {
+
     }
 
+    @Override
+    public void configure(Map<String, ?> configs) {
+    }
 }
