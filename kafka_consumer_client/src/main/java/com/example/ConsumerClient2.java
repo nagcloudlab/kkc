@@ -10,14 +10,14 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-public class ConsumerClient {
+public class ConsumerClient2 {
     public static void main(String[] args) {
 
         Properties properties = new Properties();
 
         // client id
         //---------------------------------------
-        properties.put("client.id", "consumer-client-1");
+        properties.put("client.id", "consumer-client-2");
 
         // bootstrap servers
         //---------------------------------------
@@ -25,7 +25,7 @@ public class ConsumerClient {
 
         // group id
         //---------------------------------------
-        properties.put("group.id", "consumer-group-1");
+        properties.put("group.id", "consumer-group-22");
 
         // static group membership
         //---------------------------------------
@@ -45,6 +45,10 @@ public class ConsumerClient {
         //---------------------------------------
         properties.put("session.timeout.ms", "45000"); // session timeout for the consumer
         properties.put("heartbeat.interval.ms", "3000"); // heartbeat interval for the consumer
+
+        // auto offset reset
+        //---------------------------------------
+        properties.put("auto.offset.reset", "earliest"); // earliest, latest, none
 
         // commit behavior
         //---------------------------------------

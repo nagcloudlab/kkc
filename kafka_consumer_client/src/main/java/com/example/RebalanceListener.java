@@ -8,11 +8,12 @@ import java.util.Collection;
 public class RebalanceListener implements ConsumerRebalanceListener {
     @Override
     public void onPartitionsRevoked(Collection<TopicPartition> partitions) {
-        //...
+        //
+         // commit offsets...
     }
 
     @Override
     public void onPartitionsAssigned(Collection<TopicPartition> partitions) {
-    //....
+
     }
 }

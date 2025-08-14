@@ -29,7 +29,7 @@ public class ConsumerClient {
 
         // static group membership
         //---------------------------------------
-        //properties.put("group.instance.id", "consumer-instance-1"); // uncomment to enable
+        properties.put("group.instance.id", args[0]); // uncomment to enable
 
 
         // polling behavior

@@ -101,7 +101,7 @@ Monitoring Consumer Group
 
 ```bash
 kafka1/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --list
-kafka1/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group consumer-group-2
+kafka1/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group consumer-group-1
 ```
 
 reset committed offsets for a consumer group
@@ -116,18 +116,17 @@ reset committed offsets for a consumer group
 
 
 ```bash
-kafka1/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group consumer-group-2 --execute --reset-offsets --to-earliest --all-topics
+kafka1/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group consumer-group-1 --execute --reset-offsets --to-earliest --all-topics
 
-kafka1/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group consumer-group-2 --execute --reset-offsets --to-latest --all-topics
+kafka1/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group consumer-group-1 --execute --reset-offsets --to-latest --all-topics
 
-kafka1/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group consumer-group-2 --execute --reset-offsets --shift-by -100 --all-topics
+kafka1/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group consumer-group-1 --execute --reset-offsets --shift-by -100 --all-topics
 
-kafka1/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group consumer-group-2 --execute --reset-offsets --shift-by 100 --all-topics
+kafka1/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group consumer-group-1 --execute --reset-offsets --shift-by 100 --all-topics
 
-kafka1/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group consumer-group-2 --execute --reset-offsets --to-datetime 2023-10-01T00:00:00.000Z --all-topics
+kafka1/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group consumer-group-1 --execute --reset-offsets --to-datetime 2025-08-14T17:24:35.000Z --all-topics
 
 ```
-
 
 
 
@@ -144,6 +143,5 @@ when kafka trigger a rebalance?
 
 - When a new consumer joins the group.
 - When a consumer leaves the group.
-- When a topic partition is added or removed.
-- When a consumer crashes or is shut down.
-- WHen no heartbeat is received from a consumer within the configured session timeout.
+- When a topic partition is added.
+- When a consumer crashes i.e no heartbeat received, after session.timeout.ms (45s)
