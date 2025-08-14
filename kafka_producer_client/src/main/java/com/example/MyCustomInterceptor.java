@@ -23,7 +23,7 @@ public class MyCustomInterceptor implements ProducerInterceptor {
     public void onAcknowledgement(RecordMetadata metadata, Exception exception) {
         // track the acknowledgment of the record
         //..
-
+        // update WAL file , record as sent..
     }
 
     @Override

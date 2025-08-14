@@ -92,3 +92,58 @@ Latency: 50 ms average, 150 ms max end-to-end (producer send → broker ack).
 If acks=all, this includes replication wait; with acks=1/0, you’d expect lower latency (and different durability).
 
 
+
+
+
+Monitoring Consumer Group
+----------------------------
+
+
+```bash
+kafka1/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --list
+kafka1/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group consumer-group-2
+```
+
+reset committed offsets for a consumer group
+--------------------------------------
+
+- to earliest
+- to latest
+- shift by N
+- to a specific datetime
+- to a specific offset
+- to a specific partition
+
+
+```bash
+kafka1/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group consumer-group-2 --execute --reset-offsets --to-earliest --all-topics
+
+kafka1/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group consumer-group-2 --execute --reset-offsets --to-latest --all-topics
+
+kafka1/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group consumer-group-2 --execute --reset-offsets --shift-by -100 --all-topics
+
+kafka1/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group consumer-group-2 --execute --reset-offsets --shift-by 100 --all-topics
+
+kafka1/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group consumer-group-2 --execute --reset-offsets --to-datetime 2023-10-01T00:00:00.000Z --all-topics
+
+```
+
+
+
+
+
+
+
+Partition Rebalance
+========================
+
+-> Assignment of partitions to consumers in a consumer group.
+
+when kafka trigger a rebalance?
+------------------------
+
+- When a new consumer joins the group.
+- When a consumer leaves the group.
+- When a topic partition is added or removed.
+- When a consumer crashes or is shut down.
+- WHen no heartbeat is received from a consumer within the configured session timeout.

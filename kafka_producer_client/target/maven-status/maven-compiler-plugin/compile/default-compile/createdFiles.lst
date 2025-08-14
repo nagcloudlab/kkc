@@ -1,0 +1,4 @@
+com/example/MyCustomPartitioner.class
+com/example/TransactionalProducerClient.class
+com/example/ProducerClient.class
+com/example/MyCustomInterceptor.class

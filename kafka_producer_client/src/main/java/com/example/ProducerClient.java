@@ -4,9 +4,21 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.errors.TimeoutException;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.util.List;
 import java.util.Properties;
+import java.util.Random;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ProducerClient {
+
+    private static final Random RANDOM = new Random();
+    private static final AtomicBoolean RUNNING = new AtomicBoolean(true); // Volatile | Atomic
+
+
     public static void main(String[] args) {
 
         Properties properties = new Properties();
@@ -19,7 +31,7 @@ public class ProducerClient {
         // -----------------------------------------
         properties.put("bootstrap.servers", "localhost:9092,localhost:9093,localhost:9094");
 
-        // Serde (Serializer/Deserializer)
+        // Serializer
         // -----------------------------------------
         properties.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         properties.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
@@ -43,7 +55,7 @@ public class ProducerClient {
         // "org.apache.kafka.clients.producer.internals.DefaultPartitioner");
 
         // if you want to use a custom partitioner, you can specify it here
-        // properties.put("partitioner.class", "com.example.MyCustomPartitioner");
+        properties.put("partitioner.class", "com.example.MyCustomPartitioner");
 
         // batching
         // -----------------------------------------
@@ -99,49 +111,116 @@ public class ProducerClient {
 
         KafkaProducer<String, String> producer = new KafkaProducer<>(properties);
 
+        // -------------------------- Shutdown Hook --------------------------
+        // Register EARLY so Ctrl+C always triggers a graceful shutdown.
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            System.out.println("Shutting down producer...");
-            // Any cleanup code can go here
-            producer.flush();
-        }));
+            System.out.println("\n[SHUTDOWN] Ctrl+C detected → stopping new sends, flushing, and closing...");
+            RUNNING.set(false); // Stop producing immediately (no new producer.send() calls)
+            try {
+                // Flush: waits for all queued & in-flight records to complete (success or terminal failure)
+                producer.flush();
+                // Close with a cap: also ensures internal resources close cleanly
+                producer.close(Duration.ofSeconds(30));
+                System.out.println("[SHUTDOWN] Flush & close complete.");
+            } catch (Exception e) {
+                System.err.println("[SHUTDOWN] Error during flush/close: " + e.getMessage());
+            }
+        }, "producer-shutdown-hook"));
+
+
+
+        // Transfer Event Generator
+        // ---------------------------------------------------
+        List<String> transferTypes = List.of("IMPS", "RTGS", "NEFT", "UPI");
+        List<String> statusTypes = List.of("PENDING", "SUCCESS", "FAILED");
 
         String topic = "transfer-events";
-        for (int i = 0; i < Integer.MAX_VALUE; i++) {
-            String key = null;
-            String value = "This is a test message " + i;
-            ProducerRecord<String, String> record = new ProducerRecord<>(topic, key, value);
-            try {
-                producer.send(record, (metadata, exception) -> {
-                    if (exception != null) {
-                        System.err.println("Error sending message: " + exception.getMessage());
-                        if (exception instanceof TimeoutException) {
-                            System.out.println("Message sending timed out.");
+
+        // -------------------------- Produce Loop --------------------------
+        try {
+            for (int i = 0; i < Integer.MAX_VALUE && RUNNING.get(); i++) {
+                // Build a message (quickly skip if shutdown started)
+                if (!RUNNING.get()) break;
+
+                String transferType = transferTypes.get(RANDOM.nextInt(transferTypes.size()));
+                String status       = statusTypes.get(RANDOM.nextInt(statusTypes.size()));
+
+                String transactionId = UUID.randomUUID().toString();
+                String fromAccount   = "ACC" + (100000 + RANDOM.nextInt(900000));
+                String toAccount     = "ACC" + (100000 + RANDOM.nextInt(900000));
+                double amount        = Math.round((100 + RANDOM.nextDouble() * 9900) * 100.0) / 100.0;
+                String currency      = "INR";
+                String timestamp     = Instant.now().toString();
+                String failureReason = "FAILED".equals(status) ? "Insufficient Balance" : null;
+
+                String value = String.format("""
+                        {
+                          "transaction_id": "%s",
+                          "from_account": "%s",
+                          "to_account": "%s",
+                          "amount": %.2f,
+                          "currency": "%s",
+                          "transfer_type": "%s",
+                          "timestamp": "%s",
+                          "status": "%s"%s
                         }
-                    } else {
-                        System.out.printf("Message sent successfully to topic %s partition %d offset %d%n",
-                                metadata.topic(), metadata.partition(), metadata.offset());
-                    }
-                });
-            } catch (Exception e) {
-                System.err.println("Error producing message: " + e.getMessage());
-                // Fallback action, if kafka is down or unreachable
-            }
+                        """,
+                        transactionId,
+                        fromAccount,
+                        toAccount,
+                        amount,
+                        currency,
+                        transferType,
+                        timestamp,
+                        status,
+                        failureReason != null ? String.format(",%n  \"failure_reason\": \"%s\"", failureReason) : "");
 
-            // Simulate some delay to control the rate of message production
-            try {
-                Thread.sleep(1000); // Sleep for 1000 milliseconds
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt(); // Restore interrupted status
-                System.err.println("Producer interrupted: " + e.getMessage());
-            }
+                // Do not send if shutdown already began
+                if (!RUNNING.get()) break;
 
+                ProducerRecord<String, String> record = new ProducerRecord<>(topic, transferType, value);
+
+                try {
+                    producer.send(record, (metadata, exception) -> {
+                        if (exception != null) {
+                            System.err.println("❌ Send failed: " + exception.getMessage());
+                        } else {
+                            System.out.printf("✅ Sent: Key=%s | Partition=%d | Offset=%d%n",
+                                    transferType, metadata.partition(), metadata.offset());
+                        }
+                    });
+                } catch (Exception e) {
+                    System.err.println("Error producing message: " + e.getMessage());
+                }
+
+                // Gentle pacing; if you want max throughput, lower/remove this
+                try {
+                    TimeUnit.MILLISECONDS.sleep(1);
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
+        } finally {
+            // If we exit the loop without Ctrl+C, ensure resources are released.
+            // If the shutdown hook already closed the producer, this will no-op gracefully.
+            if (RUNNING.get()) {
+                System.out.println("[EXIT] Normal termination → flushing and closing...");
+                try {
+                    producer.flush();
+                    producer.close(Duration.ofSeconds(30));
+                } catch (Exception e) {
+                    System.err.println("[EXIT] Error during flush/close: " + e.getMessage());
+                }
+            }
         }
 
-        producer.flush();
-        producer.close();
-
+        System.out.println("[DONE] Producer terminated.");
     }
 }
+
+
+
 
 // Service Factors
 

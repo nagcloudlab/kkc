@@ -24,7 +24,7 @@ public class TransactionalProducerClient {
 
         try {
             // Initialize transactions
-            producer.initTransactions(); // Finding Transaction Coordinator
+            producer.initTransactions(); // txn cordinator assignment
 
             // Start a transaction
             producer.beginTransaction();
@@ -35,6 +35,7 @@ public class TransactionalProducerClient {
                 TimeUnit.SECONDS.sleep(5); // Simulate a delay
                 if (true)
                     throw new RuntimeException("Simulated error"); // Simulate an error
+
                 // Commit the transaction
                 producer.commitTransaction();
 
