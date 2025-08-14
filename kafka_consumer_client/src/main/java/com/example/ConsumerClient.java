@@ -62,17 +62,23 @@ public class ConsumerClient {
 
         // Partition assignment strategy
         //---------------------------------------
-         properties.put("partition.assignment.strategy", "org.apache.kafka.clients.consumer.CooperativeStickyAssignor");
+        properties.put("partition.assignment.strategy", "org.apache.kafka.clients.consumer.CooperativeStickyAssignor");
 
 
         KafkaConsumer<String, String> consumer = new KafkaConsumer<>(properties);
 
+        // keep reference to main thread for graceful join
+        final Thread mainThread = Thread.currentThread();
 
         // Shutdown hook
         //---------------------------------------
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             System.out.println("Shutting down consumer...");
             consumer.wakeup();
+            try {
+                // wait for main thread to hit finally {} and close the consumer cleanly
+                mainThread.join();
+            } catch (InterruptedException ignored) {}
         }));
 
 
@@ -84,7 +90,7 @@ public class ConsumerClient {
         //---------------------------------------
         try {
             while (true) {
-               //System.out.println("Polling for messages...");
+                //System.out.println("Polling for messages...");
                 ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100)); // e.g 100
                 //System.out.println("Received " + records.count() + " records.");
                 // Sync | Async process the records
@@ -103,8 +109,16 @@ public class ConsumerClient {
             // This exception is expected on shutdown, so we can ignore it
             System.out.println("Consumer wakeup exception caught, shutting down gracefully.");
         } finally {
-            consumer.close(); // close the consumer
-            System.out.println("Consumer closed.");
+            try {
+                // final sync commit for durability; comment out if you prefer fastest exit
+                consumer.commitSync();
+            } catch (Exception ex) {
+                System.out.println("Final commit failed: " + ex.getMessage());
+            } finally {
+                // bounded close sends LeaveGroup and waits briefly => quick rebalance
+                consumer.close(Duration.ofSeconds(5)); // use Duration.ZERO for fastest, no-wait exit
+                System.out.println("Consumer closed.");
+            }
         }
 
     }

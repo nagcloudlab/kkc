@@ -1,3 +1,4 @@
+com/example/ProducerClient_With_Tracking.class
 com/example/MyCustomPartitioner.class
 com/example/TransactionalProducerClient.class
 com/example/ProducerClient.class
