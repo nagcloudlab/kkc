@@ -21,4 +21,17 @@ CREATE TABLE finance.transfer_events (
   status TEXT,
   failure_reason TEXT
 );
+
+CREATE TABLE finance.transfer_events_neft (
+  transaction_id TEXT PRIMARY KEY,
+  from_account TEXT,
+  to_account TEXT,
+  amount DOUBLE,
+  currency TEXT,
+  transfer_type TEXT,
+  timestamp TEXT,
+  status TEXT,
+  failure_reason TEXT
+);
+
 ```

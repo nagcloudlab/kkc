@@ -2,5 +2,5 @@ kafka:
   clusters:
     - name: zk-kafka-cluster
       bootstrapServers: localhost:9092,localhost:9093,localhost:9094
-    # - name: kraft-kafka-cluster-2
-    #   bootstrapServers: localhost:9095,localhost:9096,localhost:9097  
+    - name: kraft-kafka-cluster
+      bootstrapServers: localhost:9095,localhost:9096,localhost:9097  

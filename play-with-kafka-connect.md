@@ -22,8 +22,8 @@ curl -X POST -H "Content-Type: application/json" --data '{
   "config": {
     "connector.class": "com.datastax.oss.kafka.sink.CassandraSinkConnector",
     "tasks.max": "1",
-    "topics": "transfer-events",
-    "topic.transfer-events.finance.transfer_events.mapping": "transaction_id=value.transaction_id, from_account=value.from_account, to_account=value.to_account, amount=value.amount, currency=value.currency, transfer_type=value.transfer_type, timestamp=value.timestamp, status=value.status, failure_reason=value.failure_reason",
+    "topics": "neft-transfer-events",
+    "topic.neft-transfer-events.finance.transfer_events_neft.mapping": "transaction_id=value.transaction_id, from_account=value.from_account, to_account=value.to_account, amount=value.amount, currency=value.currency, transfer_type=value.transfer_type, timestamp=value.timestamp, status=value.status, failure_reason=value.failure_reason",
     "contactPoints": "127.0.0.2",
     "port": "9042",
     "keyspace": "finance",
