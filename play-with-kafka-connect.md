@@ -1,5 +1,7 @@
 
 
+https://downloads.datastax.com/#akc
+
 --------------------------------------------------
 kafka connect cluster with 2 workers
 --------------------------------------------------
