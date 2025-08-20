@@ -25,7 +25,7 @@ public class ConsumerClientWithCassandra {
                 .build();
 
         String insertQuery = """
-                INSERT INTO transfer_events (
+                INSERT INTO transfer_events_upi (
                     transaction_id, from_account, to_account,
                     amount, currency, transfer_type,
                     timestamp, status, failure_reason

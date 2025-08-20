@@ -10,7 +10,7 @@ WITH replication = {
 };
 
 
-CREATE TABLE finance.transfer_events (
+CREATE TABLE finance.transfer_events_upi (
   transaction_id TEXT PRIMARY KEY,
   from_account TEXT,
   to_account TEXT,
