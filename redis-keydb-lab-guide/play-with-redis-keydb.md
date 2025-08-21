@@ -1,13 +1,10 @@
 
-
-
 install redis-server in ubuntu
 
 ```bash
 sudo apt update
 sudo apt install redis-server
 ```
-
 check status & stop redis-server
 
 ```bash
@@ -30,5 +27,5 @@ use redis-cli to connect to redis-server
 
 ```bash
 redis-cli -h localhost -p 6379
-redis-cli -h localhost -p 6379 ping
+PING
 ```
