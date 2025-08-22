@@ -8,27 +8,27 @@ kafka topic management
 # Create a topic
 
 ```bash
-kafka1/bin/kafka-topics.sh --bootstrap-server localhost:9092 --create --topic topic1 --partitions 1
-kafka1/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list
-kafka1/bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe --topic topic1
+kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --create --topic topic1 --partitions 1
+kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list
+kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe --topic topic1
 
-kafka1/bin/kafka-topics.sh --bootstrap-server localhost:9092 --create --topic topic2 --partitions 2
-kafka1/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list
-kafka1/bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe --topic topic2
+kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --create --topic topic2 --partitions 2
+kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list
+kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe --topic topic2
 
-kafka1/bin/kafka-topics.sh --bootstrap-server localhost:9092 --create --topic topic3 --partitions 3
-kafka1/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list
-kafka1/bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe --topic topic3
+kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --create --topic topic3 --partitions 3
+kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list
+kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe --topic topic3
 
-kafka1/bin/kafka-topics.sh --bootstrap-server localhost:9092 --create --topic topic4 --partitions 40
-kafka1/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list
-kafka1/bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe --topic topic4
+kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --create --topic topic4 --partitions 40
+kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list
+kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe --topic topic4
 
 
-kafka1/bin/kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic topic1
-kafka1/bin/kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic topic2
-kafka1/bin/kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic topic3
-kafka1/bin/kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic topic4
+kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic topic1
+kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic topic2
+kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic topic3
+kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic topic4
 
 ``` 
 
@@ -52,7 +52,7 @@ Explanation of parameters:
 
 
 ```bash
-kafka1/bin/kafka-producer-perf-test.sh \
+kafka/bin/kafka-producer-perf-test.sh \
   --topic test-topic \
   --num-records 1000000 \
   --record-size 100 \
@@ -64,7 +64,7 @@ b. producer performance test with compression
 -----------------------------------
 
 ```bash
-kafka1/bin/kafka-producer-perf-test.sh \
+kafka/bin/kafka-producer-perf-test.sh \
   --topic test-topic \
   --num-records 500000 \
   --record-size 200 \
@@ -100,8 +100,8 @@ Monitoring Consumer Group
 
 
 ```bash
-kafka1/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --list
-kafka1/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group consumer-group-1
+kafka/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --list
+kafka/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group consumer-group-1
 ```
 
 reset committed offsets for a consumer group
@@ -116,15 +116,15 @@ reset committed offsets for a consumer group
 
 
 ```bash
-kafka1/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group consumer-group-1 --execute --reset-offsets --to-earliest --all-topics
+kafka/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group consumer-group-1 --execute --reset-offsets --to-earliest --all-topics
 
-kafka1/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group consumer-group-1 --execute --reset-offsets --to-latest --all-topics
+kafka/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group consumer-group-1 --execute --reset-offsets --to-latest --all-topics
 
-kafka1/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group consumer-group-1 --execute --reset-offsets --shift-by -100 --all-topics
+kafka/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group consumer-group-1 --execute --reset-offsets --shift-by -100 --all-topics
 
-kafka1/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group consumer-group-1 --execute --reset-offsets --shift-by 100 --all-topics
+kafka/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group consumer-group-1 --execute --reset-offsets --shift-by 100 --all-topics
 
-kafka1/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group consumer-group-1 --execute --reset-offsets --to-datetime 2025-08-14T17:24:35.000Z --all-topics
+kafka/bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group consumer-group-1 --execute --reset-offsets --to-datetime 2025-08-14T17:24:35.000Z --all-topics
 
 ```
 

@@ -7,8 +7,8 @@ kafka connect cluster with 2 workers
 --------------------------------------------------
 
 ```bash
-kafka1/bin/connect-distributed.sh kafka1/config/connect-distributed-worker1.properties
-kafka1/bin/connect-distributed.sh kafka1/config/connect-distributed-worker2.properties
+kafka/bin/connect-distributed.sh kafka1/config/connect-distributed-worker1.properties
+kafka/bin/connect-distributed.sh kafka1/config/connect-distributed-worker2.properties
 ```
 
 

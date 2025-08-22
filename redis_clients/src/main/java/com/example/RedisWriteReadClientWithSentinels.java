@@ -1,40 +1,46 @@
 package com.example;
 
+import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisSentinelPool;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
-
-public class RedisWriteReadClient {
+public class RedisWriteReadClientWithSentinels {
     public static void main(String[] args) throws InterruptedException {
 
-        Jedis master1 = new Jedis("localhost", 6379);
-        Jedis replica1 = new Jedis("localhost", 6380);
-        Jedis replica2 = new Jedis("localhost", 6381);
+        // 1. Sentinel Config
+        Set<String> sentinels = new HashSet<>();
+        sentinels.add("localhost:5000");
+        sentinels.add("localhost:5001");
+        sentinels.add("localhost:5002");
 
-        for (int i = 0; i < Integer.MAX_VALUE; i++) {
-            String key = "key" + i;
-            String value = "value" + i;
+        // 2. Create Sentinel Pool (monitored master name = "mymaster")
+        JedisSentinelPool sentinelPool = new JedisSentinelPool("mymaster", sentinels);
 
-            // Write to Redis
-            master1.set(key, value);
-            System.out.println("✅ Written: " + key + " = " + value);
+        // 3. Loop to continuously write to master
+        int counter = 1;
+        while (true) {
+            try (Jedis jedis = sentinelPool.getResource()) {
+                HostAndPort currentHostMaster = sentinelPool.getCurrentHostMaster();
+                System.out.println(
+                        "✅ Connected to master: " + currentHostMaster.getHost() + ":" + currentHostMaster.getPort());
+                String key = "key" + counter;
+                String value = "value" + counter;
+                jedis.set(key, value);
+                jedis.waitReplicas(2, 100); // wait for replicas to catch up
+                System.out.println("📝 Written: " + key + " = " + value);
 
+                // String read = jedis.get(key);
+                // System.out.println("🔁 Read-back: " + key + " = " + read);
 
-            // Read from Redis
-            String readValue = replica1.get(key);
-            System.out.println("🔍 Read from replica1: " + key + " = " + readValue);
-            String readValue2 = replica2.get(key);
-            System.out.println("🔍 Read from replica2: " + key + " = " + readValue2);
-
-            // Sleep for a short duration to simulate workload
-            TimeUnit.MILLISECONDS.sleep(2000);
-
+                counter++;
+                Thread.sleep(1000);
+            } catch (Exception e) {
+                System.err.println("❌ Write failed: " + e.getMessage());
+                Thread.sleep(2000); // wait before retry
+            }
         }
-
-
     }
 }

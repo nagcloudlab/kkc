@@ -50,14 +50,14 @@ log.dirs=/tmp/kafka-logs-101 | /tmp/kafka-logs-102 | /tmp/kafka-logs-103
 Start Zookeeper
 ( in future, we'll use KRaft mode, so this step will be removed)
 ```bash
-kafka1/bin/zookeeper-server-start.sh kafka1/config/zookeeper.properties 
+kafka/bin/zookeeper-server-start.sh kafka1/config/zookeeper.properties 
 ```
 
 Start Kafka servers
 ```bash
-kafka1/bin/kafka-server-start.sh kafka1/config/server.properties
-kafka2/bin/kafka-server-start.sh kafka2/config/server.properties
-kafka3/bin/kafka-server-start.sh kafka3/config/server.properties
+kafka/bin/kafka-server-start.sh zk-kafka/config/server.properties
+kafka/bin/kafka-server-start.sh zk-kafka/config/server.properties
+kafka/bin/kafka-server-start.sh zk-kafka/config/server.properties
 ```
 
 

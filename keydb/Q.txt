@@ -1,0 +1,108 @@
+
+now lets enrich clients for fail over actions
+
+package com.example;
+
+import redis.clients.jedis.Jedis;
+
+public class WriterClientM1 {
+    public static void main(String[] args) throws InterruptedException {
+        try (Jedis master1 = new Jedis("localhost", 6379)) {
+            for (int i = 1; i <= 50; i++) {
+                String key = "keydb:test:" + i;
+                String value = "M1_Value_" + i;
+                master1.set(key, value);
+                System.out.println("[Writer-M1] Set " + key + " = " + value);
+                Thread.sleep(200); // slow writes for visibility
+            }
+        }
+    }
+}
+
+
+---
+
+package com.example;
+
+import redis.clients.jedis.Jedis;
+
+public class WriterClientM2 {
+    public static void main(String[] args) throws InterruptedException {
+        try (Jedis master2 = new Jedis("localhost", 6380)) {
+            for (int i = 51; i <= 100; i++) {
+                String key = "keydb:test:" + i;
+                String value = "M2_Value_" + i;
+                master2.set(key, value);
+                System.out.println("[Writer-M2] Set " + key + " = " + value);
+                Thread.sleep(200);
+            }
+        }
+    }
+}
+
+---
+
+package com.example;
+
+import redis.clients.jedis.Jedis;
+
+public class ReaderClientReplica {
+    public static void main(String[] args) throws InterruptedException {
+        try (Jedis replica = new Jedis("localhost", 6381)) {
+            while (true) {
+                for (int i = 1; i <= 100; i++) {
+                    String key = "keydb:test:" + i;
+                    String value = replica.get(key);
+                    if (value != null) {
+                        System.out.println("[Replica] " + key + " = " + value);
+                    } else {
+                        System.out.println("[Replica] " + key + " is NOT YET synced");
+                    }
+                }
+                Thread.sleep(1000); // pause between full scans
+            }
+        }
+    }
+}
+
+---
+
+package com.example;
+
+import redis.clients.jedis.Jedis;
+
+public class ConsistencyChecker {
+    public static void main(String[] args) throws InterruptedException {
+        try (
+                Jedis m1 = new Jedis("localhost", 6379);
+                Jedis m2 = new Jedis("localhost", 6380);
+                Jedis replica = new Jedis("localhost", 6381)) {
+            while (true) {
+                for (int i = 1; i <= 100; i++) {
+                    String key = "keydb:test:" + i;
+                    String v1 = m1.get(key);
+                    String v2 = m2.get(key);
+                    String vr = replica.get(key);
+
+                    boolean consistent = (v1 != null && v1.equals(v2) && v1.equals(vr));
+                    if (!consistent) {
+                        System.out.println("[Mismatch] " + key + " => M1=" + v1 + ", M2=" + v2 + ", Replica=" + vr);
+                    }
+                }
+                Thread.sleep(2000);
+            }
+        }
+    }
+}
+
+
+---
+
+
+
+i need client1 and client2 write and read keys, 
+and client3 only read keys
+and if master1 fails, client1 should write to master2 and vice versa.
+and either replica is stale with master , should prevent reader from reading stale data.
+
+how can I achieve this?

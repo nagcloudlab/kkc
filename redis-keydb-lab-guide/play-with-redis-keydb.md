@@ -29,3 +29,16 @@ use redis-cli to connect to redis-server
 redis-cli -h localhost -p 6379
 PING
 ```
+
+
+
+-----------------------------
+How to start sentinel mode
+
+```bash
+mkdir redis-sentinel
+cd redis-sentinel
+touch sentinel.conf
+sudo redis-sentinel sentinel.conf
+```
+-----------------------------
