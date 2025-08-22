@@ -10,6 +10,7 @@ import redis.clients.jedis.Jedis;
 public class Client2WithM1 {
 
     public static void main(String[] args) throws InterruptedException {
+
         String keyPrefix = "Client2:test:";
         int i = 1;
 

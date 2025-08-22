@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  keydb-master1:
+    image: eqalpha/keydb
+    container_name: keydb-master1
+    command: keydb-server /etc/keydb/keydb.conf
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./master1.conf:/etc/keydb/keydb.conf
+    cap_add:
+      - NET_ADMIN
+
+  keydb-master2:
+    image: eqalpha/keydb
+    container_name: keydb-master2
+    command: keydb-server /etc/keydb/keydb.conf
+    ports:
+      - "6380:6379"
+    volumes:
+      - ./master2.conf:/etc/keydb/keydb.conf
+    depends_on:
+      - keydb-master1
+    cap_add:
+      - NET_ADMIN
+
+  keydb-replica:
+    image: eqalpha/keydb
+    container_name: keydb-replica
+    command: keydb-server /etc/keydb/keydb.conf
+    ports:
+      - "6381:6379"
+    volumes:
+      - ./replica.conf:/etc/keydb/keydb.conf
+    depends_on:
+      - keydb-master1
+    cap_add:
+      - NET_ADMIN
+
+  
