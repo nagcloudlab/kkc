@@ -2,6 +2,7 @@ com/example/Client3WithM2.class
 com/example/Client4WithKeyBasedRouting.class
 com/example/ReaderClient1.class
 com/example/Client1WithM1AndM2.class
+com/example/KeydbConnectionExample.class
 com/example/Client7GeoAwareHyd.class
 com/example/Client6LoadAwareWriterReader.class
 com/example/Client2WithM1.class

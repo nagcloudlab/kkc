@@ -59,7 +59,7 @@ public class Client2WithM1 {
             } finally {
                 if (jedis != null)
                     jedis.close();
-                Thread.sleep(1000);
+                Thread.sleep(1);
             }
         }
     }
