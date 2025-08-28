@@ -1,0 +1,112 @@
+version: "3.8"
+
+networks:
+  cass-net:
+    name: cass-net
+
+volumes:
+  dc1-s1-data:
+  dc1-n2-data:
+  dc1-n3-data:
+  dc1-n4-data:
+
+services:
+  dc1-seed1:
+    image: cassandra:4.1
+    container_name: dc1-seed1
+    hostname: dc1-seed1
+    networks: [cass-net]
+    environment:
+      - CASSANDRA_CLUSTER_NAME=NPCICluster
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+      - CASSANDRA_DC=dc1
+      - CASSANDRA_RACK=rack1
+      - CASSANDRA_SEEDS=dc1-seed1,dc2-seed1
+      - CASSANDRA_NUM_TOKENS=4
+      - CASSANDRA_LISTEN_ADDRESS=dc1-seed1
+      - CASSANDRA_BROADCAST_ADDRESS=dc1-seed1
+      - CASSANDRA_BROADCAST_RPC_ADDRESS=dc1-seed1
+      - MAX_HEAP_SIZE=256M
+      - HEAP_NEWSIZE=64M
+    ports:
+      - "9042:9042"   # expose dc1 via host:9042
+    volumes:
+      - dc1-s1-data:/var/lib/cassandra
+    healthcheck:
+      test: ["CMD","bash","-lc","cqlsh -e 'SHOW VERSION' dc1-seed1 9042 >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
+
+  dc1-n2:
+    image: cassandra:4.1
+    container_name: dc1-n2
+    hostname: dc1-n2
+    networks: [cass-net]
+    environment:
+      - CASSANDRA_CLUSTER_NAME=NPCICluster
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+      - CASSANDRA_DC=dc1
+      - CASSANDRA_RACK=rack1
+      - CASSANDRA_SEEDS=dc1-seed1,dc2-seed1
+      - CASSANDRA_NUM_TOKENS=4
+      - CASSANDRA_LISTEN_ADDRESS=dc1-n2
+      - CASSANDRA_BROADCAST_ADDRESS=dc1-n2
+      - CASSANDRA_BROADCAST_RPC_ADDRESS=dc1-n2
+      - MAX_HEAP_SIZE=256M
+      - HEAP_NEWSIZE=64M
+      - JVM_EXTRA_OPTS=-Dcassandra.join_ring=false
+    depends_on:
+      dc1-seed1:
+        condition: service_healthy
+    volumes:
+      - dc1-n2-data:/var/lib/cassandra
+
+  dc1-n3:
+    image: cassandra:4.1
+    container_name: dc1-n3
+    hostname: dc1-n3
+    networks: [cass-net]
+    environment:
+      - CASSANDRA_CLUSTER_NAME=NPCICluster
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+      - CASSANDRA_DC=dc1
+      - CASSANDRA_RACK=rack1
+      - CASSANDRA_SEEDS=dc1-seed1,dc2-seed1
+      - CASSANDRA_NUM_TOKENS=4
+      - CASSANDRA_LISTEN_ADDRESS=dc1-n3
+      - CASSANDRA_BROADCAST_ADDRESS=dc1-n3
+      - CASSANDRA_BROADCAST_RPC_ADDRESS=dc1-n3
+      - MAX_HEAP_SIZE=256M
+      - HEAP_NEWSIZE=64M
+      - JVM_EXTRA_OPTS=-Dcassandra.join_ring=false
+    depends_on:
+      dc1-seed1:
+        condition: service_healthy
+    volumes:
+      - dc1-n3-data:/var/lib/cassandra
+
+  dc1-n4:
+    image: cassandra:4.1
+    container_name: dc1-n4
+    hostname: dc1-n4
+    networks: [cass-net]
+    environment:
+      - CASSANDRA_CLUSTER_NAME=NPCICluster
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+      - CASSANDRA_DC=dc1
+      - CASSANDRA_RACK=rack1
+      - CASSANDRA_SEEDS=dc1-seed1,dc2-seed1
+      - CASSANDRA_NUM_TOKENS=4
+      - CASSANDRA_LISTEN_ADDRESS=dc1-n4
+      - CASSANDRA_BROADCAST_ADDRESS=dc1-n4
+      - CASSANDRA_BROADCAST_RPC_ADDRESS=dc1-n4
+      - MAX_HEAP_SIZE=256M
+      - HEAP_NEWSIZE=64M
+      - JVM_EXTRA_OPTS=-Dcassandra.join_ring=false
+    depends_on:
+      dc1-seed1:
+        condition: service_healthy
+    volumes:
+      - dc1-n4-data:/var/lib/cassandra

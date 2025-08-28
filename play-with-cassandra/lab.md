@@ -1,74 +1,37 @@
 
-Deploy cassandra
-------------------------------------------------
 
-```bash
-wget https://dlcdn.apache.org/cassandra/5.0.5/apache-cassandra-5.0.5-bin.tar.gz
-tar -xzf apache-cassandra-5.0.5-bin.tar.gz
-rm apache-cassandra-5.0.5-bin.tar.gz
-mv apache-cassandra-5.0.5 cassandra1
-cp -r cassandra1 cassandra2
-cp -r cassandra1 cassandra3
-```
+Fresh start (wipe any old state first):
+
+docker network create cass-net 2>/dev/null || true
+docker compose -f compose.dc1.yml down -v
+docker compose -f compose.dc2.yml down -v
 
 
-Edit /etc/hosts file to add 3 nodes
+Start everything:
 
-```bash
-sudo bash -c 'cat >>/etc/hosts <<EOF
-127.0.0.1   node1
-127.0.0.2   node2
-127.0.0.3   node3
-EOF'
+docker compose -f compose.dc1.yml up -d
+docker compose -f compose.dc2.yml up -d
 
 
-sudo cat /etc/hosts
-sudo ip addr add 127.0.0.1/8 dev lo
-sudo ip addr add 127.0.0.2/8 dev lo
-sudo ip addr add 127.0.0.3/8 dev lo
-```
+Join non-seeds one-by-one (dc1 then dc2):
 
-on each Cassandra, edit the cassandra.yaml file:
+docker exec -it dc1-n2 nodetool join
+docker exec -it dc1-n3 nodetool join
+docker exec -it dc1-n4 nodetool join
 
-```yaml
-listen_address: 127.0.0.1 | 127.0.0.2 | 127.0.0.3
-rpc_address: 127.0.0.1 | 127.0.0.2 | 127.0.0.3
-seeds: "127.0.0.1:7000"
-```
-
-jvm.server options 
---------------------------------------------------
--Xms500m
--Xmx500m
+docker exec -it dc2-n2 nodetool join
+docker exec -it dc2-n3 nodetool join
+docker exec -it dc2-n4 nodetool join
 
 
-on each Cassandra, edit the cassandra-env.sh file: ( line 235 )
-```bash
-JMX_PORT=7199 | 7299 | 7399
-```
+Verify DCs:
+
+docker exec -it dc1-seed1 nodetool status   # Datacenter: dc1 (4 nodes UN)
+docker exec -it dc2-seed1 nodetool status   # Datacenter: dc2 (4 nodes UN)
 
 
-
-Start Cassandra servers
-```bash
-cassandra1/bin/cassandra -f
-cassandra2/bin/cassandra -f
-cassandra3/bin/cassandra -f
-
-cassandra1/bin/nodetool status
-
-```
+If you prefer automatic joining (no nodetool join), remove the JVM_EXTRA_OPTS lines and instead start one non-seed at a time until each reaches UN before launching the next.
 
 
-Create keyspace and table
-```cql
-CREATE KEYSPACE mykeyspace WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 3 };
-USE mykeyspace;
-CREATE TABLE users (id text PRIMARY KEY, name text);
-INSERT INTO users (id, name) VALUES ('1', 'Alice');
-INSERT INTO users (id, name) VALUES ('2', 'Bob');
-INSERT INTO users (id, name) VALUES ('3', 'Charlie');
-INSERT INTO users (id, name) VALUES ('4', 'David');
+---------------------------------------------------------------
 
-SELECT * FROM users where id='1';
-```
