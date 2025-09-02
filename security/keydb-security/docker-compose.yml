@@ -1,0 +1,47 @@
+
+version: '3.8'
+
+services:
+  master1:
+    image: eqalpha/keydb
+    container_name: master1
+    command: keydb-server /etc/keydb/keydb.conf
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./master1.conf:/etc/keydb/keydb.conf:ro
+      - ./certs:/etc/keydb/certs:ro
+    networks:
+      - keydb-net
+
+  master2:
+    image: eqalpha/keydb
+    container_name: master2
+    command: keydb-server /etc/keydb/keydb.conf
+    ports:
+      - "6380:6379"
+    volumes:
+      - ./master2.conf:/etc/keydb/keydb.conf:ro
+      - ./certs:/etc/keydb/certs:ro
+    networks:
+      - keydb-net
+    depends_on:
+      - master1
+
+  master3:
+    image: eqalpha/keydb
+    container_name: master3
+    command: keydb-server /etc/keydb/keydb.conf
+    ports:
+      - "6381:6379"
+    volumes:
+      - ./master3.conf:/etc/keydb/keydb.conf:ro
+      - ./certs:/etc/keydb/certs:ro
+    networks:
+      - keydb-net
+    depends_on:
+      - master1
+
+networks:
+  keydb-net:
+    driver: bridge

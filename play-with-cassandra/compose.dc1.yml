@@ -21,7 +21,8 @@ services:
       - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
       - CASSANDRA_DC=dc1
       - CASSANDRA_RACK=rack1
-      - CASSANDRA_SEEDS=dc1-seed1,dc2-seed1
+      # local-DC seeds only
+      - CASSANDRA_SEEDS=dc1-seed1,dc1-n3
       - CASSANDRA_NUM_TOKENS=4
       - CASSANDRA_LISTEN_ADDRESS=dc1-seed1
       - CASSANDRA_BROADCAST_ADDRESS=dc1-seed1
@@ -29,7 +30,7 @@ services:
       - MAX_HEAP_SIZE=256M
       - HEAP_NEWSIZE=64M
     ports:
-      - "9042:9042"   # expose dc1 via host:9042
+      - "9042:9042"
     volumes:
       - dc1-s1-data:/var/lib/cassandra
     healthcheck:
@@ -49,20 +50,20 @@ services:
       - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
       - CASSANDRA_DC=dc1
       - CASSANDRA_RACK=rack1
-      - CASSANDRA_SEEDS=dc1-seed1,dc2-seed1
+      - CASSANDRA_SEEDS=dc1-seed1,dc1-n3
       - CASSANDRA_NUM_TOKENS=4
       - CASSANDRA_LISTEN_ADDRESS=dc1-n2
       - CASSANDRA_BROADCAST_ADDRESS=dc1-n2
       - CASSANDRA_BROADCAST_RPC_ADDRESS=dc1-n2
       - MAX_HEAP_SIZE=256M
       - HEAP_NEWSIZE=64M
-      - JVM_EXTRA_OPTS=-Dcassandra.join_ring=false
     depends_on:
       dc1-seed1:
         condition: service_healthy
     volumes:
       - dc1-n2-data:/var/lib/cassandra
 
+  # make dc1-n3 a seed too (listed above)
   dc1-n3:
     image: cassandra:4.1
     container_name: dc1-n3
@@ -73,14 +74,13 @@ services:
       - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
       - CASSANDRA_DC=dc1
       - CASSANDRA_RACK=rack1
-      - CASSANDRA_SEEDS=dc1-seed1,dc2-seed1
+      - CASSANDRA_SEEDS=dc1-seed1,dc1-n3
       - CASSANDRA_NUM_TOKENS=4
       - CASSANDRA_LISTEN_ADDRESS=dc1-n3
       - CASSANDRA_BROADCAST_ADDRESS=dc1-n3
       - CASSANDRA_BROADCAST_RPC_ADDRESS=dc1-n3
       - MAX_HEAP_SIZE=256M
       - HEAP_NEWSIZE=64M
-      - JVM_EXTRA_OPTS=-Dcassandra.join_ring=false
     depends_on:
       dc1-seed1:
         condition: service_healthy
@@ -97,14 +97,13 @@ services:
       - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
       - CASSANDRA_DC=dc1
       - CASSANDRA_RACK=rack1
-      - CASSANDRA_SEEDS=dc1-seed1,dc2-seed1
+      - CASSANDRA_SEEDS=dc1-seed1,dc1-n3
       - CASSANDRA_NUM_TOKENS=4
       - CASSANDRA_LISTEN_ADDRESS=dc1-n4
       - CASSANDRA_BROADCAST_ADDRESS=dc1-n4
       - CASSANDRA_BROADCAST_RPC_ADDRESS=dc1-n4
       - MAX_HEAP_SIZE=256M
       - HEAP_NEWSIZE=64M
-      - JVM_EXTRA_OPTS=-Dcassandra.join_ring=false
     depends_on:
       dc1-seed1:
         condition: service_healthy

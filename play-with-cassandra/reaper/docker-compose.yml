@@ -1,0 +1,33 @@
+version: "3.9"
+
+services:
+  reaper:
+    image: thelastpickle/cassandra-reaper:latest
+    container_name: cassandra-reaper
+    ports:
+      - "8080:8080"       # Web UI
+      - "8081:8081"       # Admin
+    environment:
+      # auth for the Reaper UI (required when auth is enabled; it is by default)
+      REAPER_AUTH_USER: admin
+      REAPER_AUTH_PASSWORD: change-me
+
+      # optional: default JMX creds Reaper will use when talking to your Cassandra nodes
+      # REAPER_JMX_AUTH_USERNAME: reaperUser
+      # REAPER_JMX_AUTH_PASSWORD: reaperPass
+
+      # optional: use memory storage (default) or pick a backend
+      # REAPER_STORAGE_TYPE: memory
+    # If you want to persist the in-memory backend files across restarts:
+    volumes:
+      - ./data:/var/lib/cassandra-reaper/storage
+    networks: [reaper_net]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/webui/"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+
+networks:
+  reaper_net:
+    driver: bridge

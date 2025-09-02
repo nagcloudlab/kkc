@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+  keydb-master1:
+    image: eqalpha/keydb
+    container_name: keydb-master1
+    command: keydb-server /etc/keydb/keydb.conf
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./master1.conf:/etc/keydb/keydb.conf
+    cap_add:
+      - NET_ADMIN
+  
+  keydb-replica1:
+    image: eqalpha/keydb
+    container_name: keydb-replica1
+    command: keydb-server /etc/keydb/keydb.conf
+    ports:
+      - "6380:6379"
+    volumes:
+      - ./replica1.conf:/etc/keydb/keydb.conf
+    cap_add:
+      - NET_ADMIN
+      
+  keydb-replica2:
+    image: eqalpha/keydb
+    container_name: keydb-replica2
+    command: keydb-server /etc/keydb/keydb.conf
+    ports:
+      - "6381:6379"
+    volumes:
+      - ./replica1.conf:/etc/keydb/keydb.conf
+    cap_add:
+      - NET_ADMIN
+  
+  keydb-sentinel1:
+    image: eqalpha/keydb
+    container_name: keydb-sentinel1
+    command: keydb-server /etc/keydb/keydb.conf --sentinel
+    ports:
+      - "26379:26379"
+    volumes:
+      - ./sentinel1.conf:/etc/keydb/keydb.conf
+    cap_add:
+      - NET_ADMIN
+    
+  keydb-sentinel2:
+    image: eqalpha/keydb
+    container_name: keydb-sentinel2
+    command: keydb-server /etc/keydb/keydb.conf --sentinel
+    ports:
+      - "26380:26379"
+    volumes:
+      - ./sentinel2.conf:/etc/keydb/keydb.conf
+    cap_add:
+      - NET_ADMIN
+  
+  keydb-sentinel3:
+    image: eqalpha/keydb
+    container_name: keydb-sentinel3
+    command: keydb-server /etc/keydb/keydb.conf --sentinel
+    ports:
+      - "26381:26379"
+    volumes:
+      - ./sentinel3.conf:/etc/keydb/keydb.conf
+    cap_add:
+      - NET_ADMIN 
+      
+  m1:
+    image: eqalpha/keydb
+    container_name: multi-master1
+    command: keydb-server /etc/keydb/keydb.conf
+    ports:
+      - "6382:6379"
+    volumes:
+      - ./multi-master1.conf:/etc/keydb/keydb.conf
+    cap_add:
+      - NET_ADMIN 
+  
+  m2:
+    image: eqalpha/keydb
+    container_name: multi-master2
+    command: keydb-server /etc/keydb/keydb.conf
+    ports:
+      - "6383:6379"
+    volumes:
+      - ./multi-master2.conf:/etc/keydb/keydb.conf
+    cap_add:
+      - NET_ADMIN      
+    
+  

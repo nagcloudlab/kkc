@@ -1,0 +1,12 @@
+# config/reaper.yaml
+logging:
+  level: INFO
+
+accessControl:
+  enabled: true
+  users:
+    - username: "admin"
+      password: "change-me"    # change this
+      roles: [ADMIN]
+
+# Using default in-memory (embedded) storage, persisted at /var/lib/cassandra-reaper/storage.

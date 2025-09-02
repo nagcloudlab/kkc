@@ -18,7 +18,6 @@ Join non-seeds one-by-one (dc1 then dc2):
 docker exec -it dc1-n2 nodetool join
 docker exec -it dc1-n3 nodetool join
 docker exec -it dc1-n4 nodetool join
-
 docker exec -it dc2-n2 nodetool join
 docker exec -it dc2-n3 nodetool join
 docker exec -it dc2-n4 nodetool join
