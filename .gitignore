@@ -45,10 +45,10 @@ node1
 node2
 node3
 
-*.crt
-*.key
-*.pem
-*.p12
-*.jks
-*.der
-*.csr
+# *.crt
+# *.key
+# *.pem
+# *.p12
+# *.jks
+# *.der
+# *.csr
