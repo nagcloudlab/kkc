@@ -1,0 +1,10 @@
+[req]
+distinguished_name = req_distinguished_name
+req_extensions = req_ext
+prompt = no
+
+[req_distinguished_name]
+CN = npci
+
+[req_ext]
+subjectAltName = DNS:client,DNS:node1,DNS:node2,DNS:node3

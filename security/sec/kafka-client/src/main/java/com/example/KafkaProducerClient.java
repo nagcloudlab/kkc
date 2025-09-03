@@ -22,7 +22,7 @@ public class KafkaProducerClient {
         props.put("ssl.truststore.type", "PKCS12");
 
         // keystore
-        props.put("ssl.keystore.location", "/Users/nag/kkc/security/sec/client.p12");
+        props.put("ssl.keystore.location", "/Users/nag/kkc/security/sec/npci-client.p12");
         props.put("ssl.keystore.password", "changeit");
         props.put("ssl.keystore.type", "PKCS12");
         props.put("ssl.key.password", "changeit");
@@ -30,7 +30,7 @@ public class KafkaProducerClient {
         KafkaProducer<String, String> producer = new KafkaProducer<>(props);
         // Producer logic would go here
 
-        String topic = "example-topic";
+        String topic = "t1";
         System.out.println("Producing messages to topic: " + topic);
 
         ProducerRecord<String, String> record = new ProducerRecord<>(topic, "key1", "value1");
