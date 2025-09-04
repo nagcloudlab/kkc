@@ -27,8 +27,8 @@ public class KafkaProducerClient {
         props.put(
                 "sasl.jaas.config",
                 "org.apache.kafka.common.security.scram.ScramLoginModule required " +
-                        "username=\"t1user\" " +
-                        "password=\"T1Secret!\";");
+                        "username=\"t3user\" " +
+                        "password=\"T3Secret!\";");
 
         props.put("ssl.truststore.location", "/Users/nag/kkc/security/kafka-security/certs/kafka-truststore.p12");
         props.put("ssl.truststore.password", "changeit");
@@ -45,7 +45,7 @@ public class KafkaProducerClient {
         KafkaProducer<String, String> producer = new KafkaProducer<>(props);
         // Producer logic would go here
 
-        String topic = "baz";
+        String topic = "test-topic";
         System.out.println("Producing messages to topic: " + topic);
 
         ProducerRecord<String, String> record = new ProducerRecord<>(topic, "key1", "value1");

@@ -1,0 +1,38 @@
+host: 127.0.0.1:7199
+ssl: False
+user:
+password:
+listenAddress: 0.0.0.0
+listenPort: 7077
+
+# Optional: extract env vars as labels
+additionalLabelsFromEnvvars:
+
+blacklist:
+   - java:lang:memorypool:.*usagethreshold.*
+   - .*:999thpercentile
+   - .*:95thpercentile
+   - .*:fifteenminuterate
+   - .*:fiveminuterate
+   - .*:durationunit
+   - .*:rateunit
+   - .*:stddev
+   - .*:meanrate
+   - .*:mean
+   - .*:min
+   - .*:viewlockacquiretime:.*
+   - .*:viewreadtime:.*
+   - .*:cas[a-z]+latency:.*
+   - .*:colupdatetimedeltahistogram:.*
+   - org:apache:cassandra:db:.*
+   - org:apache:cassandra:metrics:columnfamily:.*
+   - org:apache:cassandra:metrics:[^:]+:system[^:]*:.*
+   - com:criteo:nosql:cassandra:exporter:.*
+
+maxScrapFrequencyInSec:
+  50:
+    - .*
+  3600:
+    - .*:snapshotssize:.*
+    - .*:estimated.*
+    - .*:totaldiskspaceused:.*

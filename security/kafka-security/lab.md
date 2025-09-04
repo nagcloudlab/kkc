@@ -10,6 +10,9 @@ cp -r node1 node2
 cp -r node1 node3
 
 
+copy node1.properties to node1/config/kraft/server.properties
+copy node2.properties to node2/config/kraft/server.properties
+copy node3.properties to node3/config/kraft/server.properties
 
 
 uuid=$(uuidgen)
@@ -17,6 +20,9 @@ node1/bin/kafka-storage.sh format -t $uuid -c node1/config/kraft/server.properti
 node2/bin/kafka-storage.sh format -t $uuid -c node2/config/kraft/server.properties
 node3/bin/kafka-storage.sh format -t $uuid -c node3/config/kraft/server.properties
 
+
+
+export KAFKA_OPTS="-Djava.security.auth.login.config=/Users/nag/kkc/security/kafka-security/jaas.conf"
 
 
 node1/bin/kafka-server-start.sh  node1/config/kraft/server.properties
@@ -28,16 +34,14 @@ node3/bin/kafka-server-start.sh  node3/config/kraft/server.properties
 node1/bin/kafka-topics.sh --create --topic foo --partitions 3 --replication-factor 3 --bootstrap-server localhost:9092 --command-config /Users/nag/kkc/security/kafka-security/admin-client.properties
 
 
-
 node1/bin/kafka-topics.sh --create --topic bar --partitions 3 --replication-factor 3 --bootstrap-server localhost:9092 --command-config /Users/nag/kkc/security/kafka-security/admin-client.properties
-
 
 
 node1/bin/kafka-topics.sh --create --topic baz --partitions 3 --replication-factor 3 --bootstrap-server localhost:9092 --command-config /Users/nag/kkc/security/kafka-security/admin-client.properties
 
 
-cd kafka-client
-mvn clean compile exec:java -Dexec.mainClass="com.example.KafkaProducerClient"
+node1/bin/kafka-topics.sh --create --topic test-topic --partitions 3 --replication-factor 3 --bootstrap-server localhost:9092 --command-config /Users/nag/kkc/security/kafka-security/admin-client.properties
+
 
 
 node1/bin/kafka-acls.sh \
@@ -59,7 +63,11 @@ node1/bin/kafka-acls.sh \
   --command-config /Users/nag/kkc/security/kafka-security/admin-client.properties
 
 
-export KAFKA_OPTS="-Djava.security.auth.login.config=/Users/nag/kkc/security/kafka-security/jaas.conf"
+node1/bin/kafka-acls.sh \
+  --bootstrap-server localhost:9092 \
+  --add --allow-principal "User:t3user" \
+  --operation All --topic test-topic \
+  --command-config /Users/nag/kkc/security/kafka-security/admin-client.properties
 
 
 node1/bin/kafka-configs.sh --bootstrap-server localhost:9092 \
@@ -72,4 +80,12 @@ node1/bin/kafka-configs.sh --bootstrap-server localhost:9092 \
   --add-config 'SCRAM-SHA-512=[password=T2Secret!]' \
   --command-config /Users/nag/kkc/security/kafka-security/admin-client.properties
 
-  
+
+node1/bin/kafka-configs.sh --bootstrap-server localhost:9092 \
+  --alter --entity-type users --entity-name t3user \
+  --add-config 'SCRAM-SHA-512=[password=T3Secret!]' \
+  --command-config /Users/nag/kkc/security/kafka-security/admin-client.properties
+
+
+cd kafka-client
+mvn clean compile exec:java -Dexec.mainClass="com.example.KafkaProducerClient"    

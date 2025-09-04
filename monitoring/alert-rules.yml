@@ -10,7 +10,7 @@ groups:
 
   - alert: KafkaHighConsumerLag
     expr: max by (consumergroup) (kafka_consumergroup_lag) > 10000
-    for: 10m
+    for: 1m
     labels: {severity: warning}
     annotations:
       summary: "High consumer lag"
@@ -22,7 +22,7 @@ groups:
         sum by (topic) (rate(kafka_topic_partition_current_offset[5m]))
         - sum by (topic) (rate(kafka_consumergroup_current_offset[5m]))
       ) > 0
-    for: 10m
+    for: 1m
     labels: {severity: warning}
     annotations:
       summary: "Backlog growing"
@@ -33,7 +33,7 @@ groups:
       (max_over_time(kafka_consumergroup_current_offset[15m]) - min_over_time(kafka_consumergroup_current_offset[15m])) == 0
       and
       max_over_time(kafka_consumergroup_lag[15m]) > 0
-    for: 15m
+    for: 1m
     labels: {severity: critical}
     annotations:
       summary: "Stalled consumer group"

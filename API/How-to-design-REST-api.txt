@@ -1,0 +1,53 @@
+
+
+
+appln/service : todos management service
+-----------------------------------------
+
+How to design REST api?
+-----------------------
+
+step-1: Resource identification in requests: 
+
+    resource(s)
+        - todo
+        - user
+
+     /api/v1/todos
+     /api/v1/todos/{todoId}
+     /api/v1/users
+     /api/v1/users/{userId}
+     /api/v1/users/{userId}/todos
+
+     representation
+        - json
+        - xml
+
+step-2: Resource manipulation through representations ( json )
+
+    - write
+        - create ( POST)
+        - update ( PUT / PATCH )
+        - delete ( DELETE )
+    - read
+        - get ( GET )
+        - resource metadata ( HEAD )
+        - resource options ( OPTIONS )
+
+step-3: Self-descriptive messages aka headers
+
+    - request headers
+        - Content-Type: application/json
+        - Accept: application/json
+        - Authorization: Bearer <token>
+        - Cache-Control: no-cache
+        - User-Agent: PostmanRuntime/7.28.4
+
+     - response headers
+        - Content-Type: application/json
+        - Content-Length: 123
+        - Date: Mon, 01 Jan 2024 00:00:00 GMT
+        - Server: Apache/2.4.41 (Ubuntu)
+        - Cache-Control: no-cache
+
+step-4: HATEOAS ( Hypermedia As The Engine Of Application State )

@@ -1,0 +1,14 @@
+kafka:
+  clusters:
+    - name: kafka-cluster
+      bootstrapServers: localhost:9092
+      properties:
+        security.protocol: SSL
+        ssl.truststore.location: /Users/nag/kkc/security/kafka-security/certs/kafka-truststore.p12
+        ssl.truststore.password: changeit
+        ssl.truststore.type: PKCS12
+        # If brokers require client certs (mTLS)
+        ssl.keystore.location: /Users/nag/kkc/security/kafka-security/certs/client.p12
+        ssl.keystore.password: changeit
+        ssl.keystore.type: PKCS12
+        ssl.key.password: changeit

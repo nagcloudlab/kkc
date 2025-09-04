@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  m1:
+    image: eqalpha/keydb
+    container_name: m1
+    command: keydb-server /etc/keydb/keydb.conf
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./master1.conf:/etc/keydb/keydb.conf
+      - m1-data:/data
+    cap_add:
+      - NET_ADMIN
+
+  m2:
+    image: eqalpha/keydb
+    container_name: m2
+    command: keydb-server /etc/keydb/keydb.conf
+    ports:
+      - "6380:6379"
+    volumes:
+      - ./master2.conf:/etc/keydb/keydb.conf
+      - m2-data:/data
+    depends_on:
+      - m1
+    cap_add:
+      - NET_ADMIN
+
+  r1:
+    image: eqalpha/keydb
+    container_name: r1
+    command: keydb-server /etc/keydb/keydb.conf
+    ports:
+      - "6381:6379"
+    volumes:
+      - ./replica.conf:/etc/keydb/keydb.conf
+      - r1-data:/data
+    depends_on:
+      - m1
+    cap_add:
+      - NET_ADMIN
+
+  re-m1:
+    image: oliver006/redis_exporter
+    container_name: re-m1
+    ports:
+      - "7074:9121"
+    environment:
+      REDIS_ADDR: "redis://m1:6379"
+
+  re-m2:
+    image: oliver006/redis_exporter
+    container_name: re-m2
+    ports:
+      - "7075:9121"
+    environment:
+      REDIS_ADDR: "redis://m2:6379"
+
+  re-r1:
+    image: oliver006/redis_exporter
+    container_name: re-r1
+    ports:
+      - "7076:9121"
+    environment:
+      REDIS_ADDR: "redis://r1:6379"
+
+
+volumes:
+  m1-data:
+  m2-data:
+  r1-data:

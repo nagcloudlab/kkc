@@ -1,6 +1,16 @@
 
 
 
+# start kafka nodes with jmx exporter agent
+--------------------------------------------------
+
+uuid=$(uuidgen)
+
+node1/bin/kafka-storage.sh format -t $uuid -c node1/config/kraft/server.properties
+node2/bin/kafka-storage.sh format -t $uuid -c node2/config/kraft/server.properties
+node3/bin/kafka-storage.sh format -t $uuid -c node3/config/kraft/server.properties
+
+
 export KAFKA_OPTS="-javaagent:/Users/nag/kkc/monitoring/jmx_prometheus_javaagent-1.4.0.jar=7071:/Users/nag/kkc/monitoring/kafka-jmx-config.yml"
 node1/bin/kafka-server-start.sh node1/config/kraft/server.properties
 
@@ -23,12 +33,13 @@ node1/bin/kafka-producer-perf-test.sh \
   --record-size 100
 
 
+
 node1/bin/kafka-console-consumer.sh \
   --topic payments \
   --bootstrap-server localhost:9092 \
   --group slow-consumer \
   --from-beginning \
-  --max-messages 100
+  --max-messages 1000
 
 
 
@@ -63,3 +74,13 @@ cd kafka_exporter-1.9.0.darwin-amd64
 
 
 curl -s http://localhost:9308/metrics | grep kafka
+
+
+
+
+start cassandra exporter as standalone process
+
+
+java -jar cassandra_exporter-2.3.8.jar ce1_config.yml
+java -jar cassandra_exporter-2.3.8.jar ce2_config.yml
+java -jar cassandra_exporter-2.3.8.jar ce3_config.yml
